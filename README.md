@@ -13,7 +13,7 @@ https://github.com/prateeksingh132/CAPSTONE-Frontend.git
 * Order: user (referenced), orderItems (embedded snapshot: name, price, qty), totalPrice, isPaid.
 
 # Routes:
-* Public routes: GET /api/products (to show the list) and GET /api/products/:id (for details).
+* Public routes: GET /api/products (to show the list) and GET /api/products/:id (for individual product details).
 * Auth routes: POST /api/auth/login (using JWT)
 * Protected routes: POST /api/orders (for checkout) and POST /api/chat (for the AI tech advisor).
-* Admin route: GET /api/admin/stats (i am gonna use aggregation pipeline here to calculate total inventory value and other analytics, similar to what i did in sba 319)."
+* Admin route: GET /api/admin/stats, POST /api/products, PATCH /api/products/:id, delete /api/products/:id - (for GET /api/admin/stats, i am gonna use aggregation pipeline to calculate total inventory value and other analytics, similar to what i did in sba 319)." 
