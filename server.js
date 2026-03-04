@@ -1,0 +1,43 @@
+////////////////////////////////////////// Imports
+import express from "express";
+import dotenv from "dotenv";
+
+
+///////// Import Logging Middleware
+
+
+///////// Import Error Handling Middleware
+
+
+///////// Import routes
+
+
+//////// Import Database
+
+
+// load env vars from .env file
+dotenv.config();
+
+////////////////////////////////////////// Setups
+const PORT = 3000;
+const app = express();
+
+
+
+//////////////////////////////////////// Middleware
+
+
+
+
+//////////////////////////////////////// Routes
+
+
+
+//////////////////////////////////////// Error Handling
+
+
+
+////////////////////////////////////////// Listener
+app.listen(PORT, () => {
+    console.log(`Server running on PORT: ${PORT}`);
+});
