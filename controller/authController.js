@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 // logic: so i am creating the authentication logic into a dedicated controller here
-// for sba 320, i used localstorage for tokens. so, idea here is to use bcryptjs to hash passwords and jsonwebtoken to generate a token, which we will inject securely into an http only cookie to stop attacks, especially xss attacks.
+// for sba 320, i used localstorage for tokens. storing tokens in localstorage makes them vulnerable to xss attacks. so, idea here is to use bcryptjs to hash passwords and jsonwebtoken to generate a token, which we will inject securely into an http only cookie to stop attacks, especially xss attacks.
 // https://github.com/betheashvin/mern-secure-auth
 // https://github.com/piyush-eon/React-shopping-cart-context-with-reducer
 // https://dev.to/mayankrsagar/local-storage-vs-cookies-for-jwt-auth-in-mern-e14
@@ -66,7 +66,7 @@ export const loginUser = async (req, res, next) => {
             res.cookie('jwt', token, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV !== 'development', // enforces https in production
-                sameSite: 'strict', // stops csrf attacks
+                sameSite: 'strict', // stops csrf attacks , // https://github.com/betheashvin/mern-secure-auth
                 maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
             });
 
