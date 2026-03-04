@@ -2,6 +2,8 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
+
 
 ///////// Import Logging Middleware
 import { logReq } from "./middleware/logger.js";
@@ -10,7 +12,7 @@ import { logReq } from "./middleware/logger.js";
 import { error404, globalErr } from './middleware/error.js';
 
 ///////// Import routes
-
+import authRoutes from './routes/authRoutes.js';
 
 //////// Import Database
 import connectDB from './database/conn.js';
@@ -26,7 +28,17 @@ connectDB();
 
 
 
+
 //////////////////////////////////////// Middleware
+
+// updating default cors configuration so it accepts credentials (cookies) across origins.
+app.use(cors({ origin: true, credentials: true }));
+
+app.use(express.json());
+// parse incoming cookies
+app.use(cookieParser());
+
+// logging middleware
 app.use(logReq);
 
 
@@ -38,6 +50,9 @@ app.use(logReq);
 //   res.send("testing read!");
 // });
 ////////////TESTING
+
+// adding the authentication router
+app.use('/api/auth', authRoutes);
 
 
 //////////////////////////////////////// Error Handling
