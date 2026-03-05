@@ -15,6 +15,7 @@ import { error404, globalErr } from './middleware/error.js';
 import authRoutes from './routes/authRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
 
 //////// Import Database
 import connectDB from './database/conn.js';
@@ -59,6 +60,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 // adding the orders router
 app.use('/api/orders', orderRoutes);
+// adding the admins router
+app.use('/api/admin', adminRoutes);
 
 
 //////////////////////////////////////// Error Handling
