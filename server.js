@@ -13,6 +13,7 @@ import { error404, globalErr } from './middleware/error.js';
 
 ///////// Import routes
 import authRoutes from './routes/authRoutes.js';
+import productRoutes from './routes/productRoutes.js';
 
 //////// Import Database
 import connectDB from './database/conn.js';
@@ -53,6 +54,8 @@ app.use(logReq);
 
 // adding the authentication router
 app.use('/api/auth', authRoutes);
+// adding the products router
+app.use('/api/products', productRoutes);
 
 
 //////////////////////////////////////// Error Handling
