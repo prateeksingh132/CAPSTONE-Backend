@@ -1,8 +1,10 @@
 ////////////////////////////////////////// Imports
+import 'dotenv/config';
 import express from "express";
-import dotenv from "dotenv";
+//import dotenv from "dotenv";
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import techAdvisorRoutes from './routes/techAdvisorRoutes.js';
 
 
 ///////// Import Logging Middleware
@@ -21,7 +23,9 @@ import adminRoutes from './routes/adminRoutes.js';
 import connectDB from './database/conn.js';
 
 // load env vars from .env file
-dotenv.config();
+//dotenv.config();
+
+
 
 ////////////////////////////////////////// Setups
 const app = express();
@@ -62,6 +66,8 @@ app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 // adding the admins router
 app.use('/api/admin', adminRoutes);
+// adding the tech advisor routes
+app.use('/api/chat', techAdvisorRoutes);
 
 
 //////////////////////////////////////// Error Handling
