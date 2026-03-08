@@ -18,8 +18,8 @@ export const addOrderItems = async (req, res, next) => {
             throw new Error("no order items received in the payload");
         }
 
-        // logic: mapping over the items from the frontend and fetching the real prices from the database.
-        // the idea is that i m gonna grab the exact price from db at checkout so users cant change it and saving it so it doesnt change if i update prices later.
+        // logic: mapping over the items from the frontend and fetching the real prices from the database. 
+        // this is the core of the document snapshot pattern. the idea is that i m gonna grab the exact price from db at checkout so users cant change it and saving it so it doesnt change if i update prices later.
         const verifiedItems = await Promise.all(orderItems.map(async (item) => {
             const dbProduct = await Product.findById(item.product);
 
