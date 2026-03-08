@@ -130,7 +130,7 @@ export const products = [
         description: 'Industry-standard dynamic microphone for podcasting, broadcasting, and streaming.',
         price: 399.99,
         stock: 15,
-        image: '/images/mic.jpg',
+        image: '/images/tablet.jpg',
         specs: { 'Type': 'Dynamic', 'Polar Pattern': 'Cardioid', 'Connection': 'XLR' }
     },
     {
