@@ -126,7 +126,7 @@ once the server is running, you can use an api client like postman to test all t
 * **testing protected and admin routes (requires cookie):**
   * once you are logged in and postman is holding the cookie, you can test the secure endpoints:
   * `POST /api/orders`: this tests the secure checkout logic.
-    * you have to send a raw json body with an `orderitems` array (including a real product id and quantity) to see my backend calculate the true price and create the document snapshot.
+    * you have to send a raw json body with an `orderItems` array (including a real product id and quantity) to see my backend calculate the true price and create the document snapshot.
   * `GET /api/admin/sales`: this tests the mongodb aggregation pipeline.
     * it fetches the daily sales stats.
     * *note:* this route specifically requires the admin role. if you try this after logging in with the standard user account (`prateek@test.com`), my `admin` middleware will block and throw a 403 forbidden error.
@@ -145,9 +145,9 @@ i built the api to follow strict rest principles. once again, since i am using `
 | **GET** | `/api/products` | fetches all products. supports `?keyword=` search. | public |
 | **GET** | `/api/products/:id` | fetches a specific product by its `ObjectId`. | public |
 | **POST** | `/api/products` | creates a new sample product. | admin only |
-| **PATCH**| `/api/products/:id` | updates product details. | admin / `{ "price": 999, "stock": 10 }` |
+| **PUT**| `/api/products/:id` | updates product details. | admin / `{ "price": 999, "stock": 10 }` |
 | **DELETE**| `/api/products/:id`| deletes a product permanently. | admin only |
-| **POST** | `/api/orders` | submits a new checkout payload to create snapshot. | private / `{ "orderitems": [...] }` |
+| **POST** | `/api/orders` | submits a new checkout payload to create snapshot. | private / `{ "orderItems": [...] }` |
 | **GET** | `/api/admin/sales` | fetches aggregated daily sales data for charts. | admin only |
 | **POST** | `/api/chat/ask` | prompts the ai tech advisor using my tech advisor controller. | public / `{ "prompt": "i need a laptop.." }` |
 
