@@ -84,12 +84,13 @@ i checked the capstone requirement list and implemented them one by one. here is
 since this is a decoupled api backend, there is no visual html view like in my older projects. here is a detailed step-by-step guide on how to set it up and test it locally using an api client like postman:
 
 1. **installation & environment setup:**
+   * prerequisite: make sure you are running Node.js v18 or higher on your machine.
    * clone the repository and run `npm install` in your terminal to grab all the backend dependencies (express, mongoose, bcryptjs, etc).
    * create a `.env` file right in the root directory. include these exact variables for the server to work properly:
-     * `PORT=3000` (or whichever port you prefer)
-     * `MONGO_URI=` (your own mongodb atlas connection string)
+     * `PORT=3000` (this MUST be exactly 3000. my frontend vite proxy is hardcoded to look for port 3000).
+     * `MONGO_URI=` (your own mongodb atlas connection string. make sure to add /GadgetShack at the very end of the string so mongoose creates the correct database instead of defaulting to 'test')
      * `JWT_SECRET=` (a secure random string for hashing the auth cookies)
-     * `NODE_ENV=development` (or production)
+     * `NODE_ENV=development` 
      * `OPENAI_API_KEY=` (your active openai developer key for the tech advisor feature)
 
 2. **database seeding:**
@@ -99,7 +100,7 @@ since this is a decoupled api backend, there is no visual html view like in my o
    * *(note: if you ever need to wipe the db completely, you can just run `node seeder.js -d`)*.
 
 3. **running the server:**
-   * run `npm run dev` to start the server using nodemon.
+   * run `npm run dev` to start the server using nodemon. or run `npm start` (which runs standard node).
    * you will see the nodemon startup lines, followed by a message saying `server running on port: 3000` and my testing log `testing: database connection established successfully ...`. this confirms the server and database are connected properly.
 
 ### Interacting with the api (postman)
