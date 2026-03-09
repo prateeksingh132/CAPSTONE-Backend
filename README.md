@@ -52,14 +52,14 @@ i checked the capstone requirement list and implemented them one by one. here is
 
 5. **admin analytics and aggregation pipeline:**
    * for the admin dashboard, i wanted to show a graph of daily sales. the issue here was that pulling thousands of orders into my node server and using a javascript `reduce` loop would crash the event loop.
-   * **aggregation pipeline:** instead, i used the mongodb aggregation pipeline (`$group`, `$sum`, `$datetostring`) in my `adminController.js`. i used the `$group` stage combined with `$datetostring` to format the timestamps into clean `yyyy-mm-dd` strings and then used the `$sum` operator to calculate the total sales and order count per day. this makes the mongodb to do the math and it just hands my server a formatted json array.
+   * **aggregation pipeline:** instead, i used the mongodb aggregation pipeline (`$group`, `$sum`, `$dateToString`) in my `adminController.js`. i used the `$group` stage combined with `$dateToString` to format the timestamps into clean `yyyy-mm-dd` strings and then used the `$sum` operator to calculate the total sales and order count per day. this makes the mongodb to do the math and it just hands my server a formatted json array.
    * **recharts visualization:** then i feed this formatted json array directly into the **recharts** library (in frontend) to draw a nice, interactive line chart on the screen.
 
 6. **tech advisor:**
    * i wanted to build a cool ai feature where users can ask questions about products and get instant reply, so i integrated the openai api in my `techAdvisorController.js`. 
    * the problem with integrating such features is that we can never put our secret api keys in frontend react code bcuz anyone can steal them from the browser dev tools. so my backend acts as a secure proxy. when a user asks a question, my backend first queries the db collection to find all products where the stock is greater than 0 (`$gt: 0`). 
    * i take that live inventory, stringify it into json and feed it directly into the openai system message as context. this forces the model to only recommend products that actually exist in my store. the frontend just gets the final answer and my secret key never goes in the react frontend. 
-   * i also forced the model to return a strict json object containing the exact `productid` so my frontend can render a direct link to the item.
+   * i also forced the model to return a strict json object containing the exact `recommendedProductId` so my frontend can render a direct link to the item.
 
 7. **fuzzy search:**
    * in my `productController.js`, i added regex fuzzy search logic (`$regex`, `$options: 'i'`). 
@@ -67,14 +67,13 @@ i checked the capstone requirement list and implemented them one by one. here is
 
 8. **data validation:**
   * i tried to add a lot of strict validations across my mongoose schemas and routes:
-    * **enum:** `category` in my product schema can only be specific values (laptops, smartphones, audio, accessories, tablets) so we don't get weird typos.
     * **unique:** `email` and `username` in `User.js` must be unique to prevent duplicate accounts.
-    * **min/max:** ratings in `Review.js` must be exactly between 1-5 and things like product price, stock and order quantities cannot be negative.
+    * **min/max:** ratings in Review.js must be exactly between 1-5 and order quantities in Order.js cannot drop below 1.
     * **required:** important fields like product name, price and user passwords are all required.
     * **regex:** i used a regex validation (`/^[0-9a-fA-F]{24}$/`) in my `router.param` to make sure any url id is actually a valid 24-character hex string before mongoose even tries to read it, this stops the server from crashing.
     * **compound index (spam protection):** i wanted to make sure a user cannot review the same product twice. earlier, i tried to do this with an if-check in the controller, but then i found out mongoose can do it with a unique compound index on user + product. so i added `{ product: 1, user: 1 }, { unique: true }` in my `Review.js` schema. this is a database-level rule that prevents review spam.
 
-9. **global error handling:** * i built custom `error404` and `globalerr` middlewares. 
+9. **global error handling:** * i built custom `error404` and `globalErr` middlewares. 
    * if a user enters a bad route or a db query fails, my middleware catches it and sends a clean, formatted json error message back to the frontend.
 
 
