@@ -57,3 +57,14 @@ export const addOrderItems = async (req, res, next) => {
         next(error);
     }
 };
+
+// logic: building the controller to fetch only the logged-in user's orders.
+// the idea is that we sort by createdAt -1 so their newest orders show up at the top.
+export const getMyOrders = async (req, res, next) => {
+    try {
+        const orders = await Order.find({ user: req.user._id }).sort({ createdAt: -1 });
+        res.status(200).json(orders);
+    } catch (error) {
+        next(error);
+    }
+};
