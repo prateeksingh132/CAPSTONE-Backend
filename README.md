@@ -153,6 +153,16 @@ i built the api to follow strict rest principles. once again, since i am using `
 | **GET** | `/api/orders/mine` | fetches historical orders for the logged-in user. | private |
 
 
+### Future work
+there were a few features i planned for this capstone but couldnt get to. i will definitely add these later:
+*   **stripe payment integration:** right now, my checkout controller just receives the product ids, calculates the price securely and saves the order snapshot. i wanna connect the real stripe api to actually process payments before saving to db.
+*   **pagination for products:** my `getProducts` controller currently fetches the entire inventory at once. i wanna implement mongoose `.skip()` and `.limit()` methods so my server doesn't crash or slow down if the catalog grows to thousands of products.
+*   **review and wishlist routes:** i successfully built the database models and compound indexes for adding reviews and creating wishlists (to prevent duplicate data), but i ran out of time to build the actual `POST` routes for them. i will add those in future to fully complete these functionalities.
+
+
+
+
+
 # Testing
 
 I have created (and used during code creation) test points (log statement) at multiple places in the code, I have not removed them. They are commented at the time of submission and can be uncommented for future debugging and code check. These code checks looks something like:
@@ -164,7 +174,7 @@ I have created (and used during code creation) test points (log statement) at mu
 
 
 
-# references
+# References
 
 * https://github.com/ed-roh/fullstack-admin
 * https://www.youtube.com/watch?v=XnbUHzZkypQ
