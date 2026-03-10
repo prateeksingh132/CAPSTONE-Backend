@@ -149,7 +149,7 @@ i built the api to follow strict rest principles. once again, since i am using `
 | **POST** | `/api/orders` | submits a new checkout payload to create snapshot. | private / `{ "orderItems": [...] }` |
 | **GET** | `/api/admin/sales` | fetches aggregated daily sales data for charts. | admin only |
 | **POST** | `/api/chat/ask` | prompts the ai tech advisor using my tech advisor controller. | public / `{ "prompt": "i need a laptop.." }` |
-
+| **GET** | `/api/orders/mine` | fetches historical orders for the logged-in user. | private |
 
 
 # Testing
