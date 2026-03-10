@@ -40,6 +40,7 @@ i checked the capstone requirement list and implemented them one by one. here is
    * **users:** stores member info, hashed passwords and a wishlist array that uses `ObjectId` references to the product collection.
    * **products:** stores the gadgets.
    * **reviews:** uses references to link a user to a product.
+      * in my product controller, i used the `.populate('user', 'username')` method to swap the user's objectid string with their actual name so the frontend can display exactly who wrote it.
    * **orders:** stores the checkout data. 
 
 3. **the document snapshot pattern:**
