@@ -3,6 +3,7 @@
 //// referring from sba 319
 
 import Product from '../models/Product.js';
+import Review from '../models/Review.js';
 
 // logic: i am gonna make a get all products route but this time i m gonna add fuzzy search to it, to allow flexibility
 // idea is if someone searches for "laptop", mongodb can use regex to find it instead of needing an exact match.
@@ -31,12 +32,17 @@ export const getProductById = async (req, res, next) => {
     try {
         const product = await Product.findById(req.params.id);
 
+
+        // logic: fetching the reviews linked to this specific product and populating the username so i can display who wrote it.
+        const reviews = await Review.find({ product: req.params.id }).populate('user', 'username');
+
         ////////////TESTING
         // console.log("TESTING: product:", product);
         ////////////
 
         if (product) {
-            res.status(200).json(product);
+            // logic: injecting the reviews array into the response payload before sending it to the frontend.
+            res.status(200).json({ ...product._doc, reviews });
         } else {
             res.status(404);
             throw new Error("product not found in the database");
