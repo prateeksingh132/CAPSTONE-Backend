@@ -11,58 +11,80 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
-export const getAdvisorRecommendation = async (req, res, next) => {
+// goal: refactoring the tech advisor controller to act as an intelligent proxy using tool calling.
+// the idea is that instead of just chatting, the advisor can output structured json to search the actual mongodb database.
+export const askAdvisor = async (req, res, next) => {
+    const { prompt } = req.body;
+
+    if (!prompt) {
+        res.status(400);
+        return next(new Error("no prompt provided for the tech advisor"));
+    }
+
     try {
-        const { prompt } = req.body;
-
-        if (!prompt) {
-            res.status(400);
-            throw new Error("prompt is required to talk to the tech advisor");
-        }
-
-        // logic: fetching the live inventory from my collections. 
-        // i am selecting only the important fields (and filtering out 0 stock)
-        const inventory = await Product.find({ stock: { $gt: 0 } }).select('_id name price category description');
-
-        // logic: formatting the db data into a simple string for the advisor to read.
-        const inventoryContext = JSON.stringify(inventory);
-
-        // logic: writing my message to advisor, giving strict rules on how to reply. i need it to return valid json so my react frontend can map it to my product card later.
-        const systemMessage = `
-        You are a helpful tech advisor for an electronics store named GadgetShack.
-        Here is our current in-stock inventory: ${inventoryContext}
-        Answer the user's question friendly and concisely. 
-        If a product matches their needs, recommend it based ONLY on the provided inventory.
-        You MUST return your response in strictly this JSON format:
-        {
-            "reply": "Your conversational advice here.",
-            "recommendedProductId": "The exact _id string of the product from the inventory, or null if nothing fits"
-        }
-        Do not include markdown blocks like \`\`\`json, just output the raw JSON object.
-        `;
-
-        const completion = await openai.chat.completions.create({
-            model: "gpt-4o-mini", // i beleive its the cheapest model avaialble, will check later for usage limit
+        // logic: calling the openai api. i am switching to gpt-4o-mini bcuz it is fast and supports structured tool calling perfectly.
+        const response = await openai.chat.completions.create({
+            model: "gpt-4o-mini",
             messages: [
-                { role: "system", content: systemMessage },
+                {
+                    role: "system",
+                    content: "you are a gadgetshack tech advisor. if a user asks for a product, use the recommend_product tool to search our database. be friendly and extremely brief."
+                },
                 { role: "user", content: prompt }
             ],
-            temperature: 0.7,
+            // logic: defining the tool schema so the advisor knows exactly what json format to return when it decides to show a product.
+            tools: [{
+                type: "function",
+                function: {
+                    name: "recommend_product",
+                    description: "search for a specific product by category or keyword based on user needs",
+                    parameters: {
+                        type: "object",
+                        properties: {
+                            category: { type: "string", description: "e.g., laptops, smartphones, audio, accessories" },
+                            keyword: { type: "string", description: "e.g., gaming, wireless, pro, ultra" }
+                        },
+                        required: ["category"]
+                    }
+                }
+            }]
         });
 
-        // logic: parsing the text back into a javascript object so i can send it safely to the frontend.
-        const advisorResponse = JSON.parse(completion.choices[0].message.content);
+        const advisorMessage = response.choices[0].message;
 
-        ////////////TESTING
-        // console.log('TESTING: advisor responded successfully with recommendation:', advisorResponse.recommendedProductId);
-        ////////////
+        // logic: checking if the advisor decided to use my tool. if tool_calls exists, it means it wants me to fetch database info and show a product card.
+        if (advisorMessage.tool_calls) {
+            const toolCall = advisorMessage.tool_calls[0];
+            // logic: parsing the structured json arguments generated based on the user's natural language prompt.
+            const args = JSON.parse(toolCall.function.arguments);
 
-        res.status(200).json(advisorResponse);
+            ////////////TESTING
+            // console.log(`TESTING: advisor triggered tool call. searching db for category: ${args.category}, keyword: ${args.keyword}`);
+            ////////////
+
+            // logic: using the extracted keywords to search the actual mongodb database using mongoose.
+            // using regex with the 'i' option so the search is case insensitive.
+            const products = await Product.find({
+                category: { $regex: args.category, $options: 'i' },
+                name: { $regex: args.keyword || "", $options: 'i' }
+            }).limit(1);
+
+            // logic: sending back a custom json response telling the react frontend to render a specific ui component with the actual database data.
+            return res.status(200).json({
+                type: 'ui_component',
+                text: `Here is the ${args.category} I recommend based on our current inventory:`,
+                productData: products.length > 0 ? products[0] : null
+            });
+        }
+
+        // logic: if the user was just saying hello, the advisor wont use a tool. so i just send back the normal conversational text.
+        return res.status(200).json({
+            type: 'text',
+            text: advisorMessage.content
+        });
 
     } catch (error) {
-        console.error("tech advisor error:", error);
-        res.status(500);
-        // logic: passing the error down to my global error middleware
-        next(new Error("failed to generate advisor response. check api key or prompt formatting."));
+        console.error("tech advisor generative error:", error);
+        next(error);
     }
 };
