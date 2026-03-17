@@ -4,7 +4,6 @@ import mongoose from 'mongoose';
 // using mongoose map type for the specs field because different gadgets have different specs (like cpu or battery life). this lets me store key-value pairs without changing the schema every time.
 
 const productSchema = new mongoose.Schema({
-
     name: {
         type: String,
         required: true
@@ -34,11 +33,14 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    // logic: adding an optional modelurl string to store the 3d .glb binary links for my webgl canvas.
+    modelUrl: {
+        type: String
+    },
     specs: {
         type: Map,
         of: String
     }
 }, { timestamps: true });
-
 
 export default mongoose.model('Product', productSchema);

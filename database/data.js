@@ -182,6 +182,40 @@ export const products = [
         stock: 25,
         image: '/images/speaker.jpg',
         specs: { 'Storage': '128GB', 'Display': '4K+ Infinite Display', 'Processor': 'Snapdragon XR2 Gen 2' }
+    },
+    {
+        name: 'Noise Cancelling Headphones',
+        brand: 'Sony',
+        category: 'Audio',
+        description: 'Immersive sound with active noise cancellation. Perfect for deep focus.',
+        price: 299.99,
+        stock: 25,
+        image: '/images/headset.jpg',
+        // logic: providing an actual khronos group public domain .glb file to test my 3d rendering later.
+        modelUrl: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Headphones/glTF-Binary/Headphones.glb',
+        specs: { 'Impedance': '32 Ohm', 'Battery Life': '30 hours', 'Connectivity': 'Bluetooth 5.0' }
+    },
+    {
+        name: 'Retro Bluetooth Boombox',
+        brand: 'JVC',
+        category: 'Audio',
+        description: 'Vintage aesthetics combined with modern Bluetooth audio drivers.',
+        price: 149.99,
+        stock: 5,
+        image: '/images/speaker.jpg',
+        modelUrl: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BoomBox/glTF-Binary/BoomBox.glb',
+        specs: { 'Output': '40W RMS', 'Weight': '4.5 lbs' }
+    },
+    {
+        name: 'Vintage Film Camera',
+        brand: 'Leica',
+        category: 'Photography',
+        description: 'A restored antique camera for photography purists. Fully functional.',
+        price: 450.00,
+        stock: 2,
+        image: '/images/camera.jpg',
+        modelUrl: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/AntiqueCamera/glTF-Binary/AntiqueCamera.glb',
+        specs: { 'Format': '35mm Film', 'Lens Mount': 'Universal Thread' }
     }
 ];
 
