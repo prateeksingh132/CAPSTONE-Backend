@@ -4,11 +4,11 @@ import express from "express";
 //import dotenv from "dotenv";
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-
 import path from 'path'; // logic: importing path to resolve the frontend dist directory
+import helmet from 'helmet';
 
+// Import tech advisor
 import techAdvisorRoutes from './routes/techAdvisorRoutes.js';
-
 
 ///////// Import Logging Middleware
 import { logReq } from "./middleware/logger.js";
@@ -40,6 +40,23 @@ connectDB();
 
 
 //////////////////////////////////////// Middleware
+
+// logic: deploying helmet to secure http headers and prevent xss/clickjacking.
+// i am modifying the content security policy to explicitly allow my local ports, but blocking everything else.
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", "'unsafe-inline'"],
+            styleSrc: ["'self'", "'unsafe-inline'"],
+            imgSrc: ["'self'", "data:", "https:"],
+            // logic: strictly allowing only my express server and vite dev server
+            connectSrc: ["'self'", "http://localhost:3000", "http://localhost:5173"],
+        },
+    },
+    crossOriginEmbedderPolicy: false,
+}));
+
 
 // updating default cors configuration so it accepts credentials (cookies) across origins.
 app.use(cors({ origin: true, credentials: true }));
