@@ -43,4 +43,13 @@ const productSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
+
+// logic: applying compound database indexing here. 
+// my tech advisor controller and real-time voice search query the 'name' and 'category' fields many times using regex.
+// the idea is that indexing them converts a slow collection scan into a fast lookup directly on the database hardware so the server doesnt crash under load.
+productSchema.index({ name: 1, category: 1 });
+
+// logic: adding a standalone index for category as well just in case i add category-specific dropdown filters later.
+productSchema.index({ category: 1 });
+
 export default mongoose.model('Product', productSchema);
